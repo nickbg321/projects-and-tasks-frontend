@@ -37,15 +37,13 @@
 
             <template v-slot:[`item.action`]="{ item }">
               <v-icon
-                  small
-                  @click="deleteProject(item)"
+                  @click="openTasksList(item)"
                   class="mr-2"
                   title="Manage tasks"
               >
                 mdi-format-list-checkbox
               </v-icon>
               <v-icon
-                  small
                   @click="editProject(item)"
                   class="mr-2"
                   title="Edit project"
@@ -53,7 +51,6 @@
                 mdi-pencil
               </v-icon>
               <v-icon
-                  small
                   @click="deleteProject(item)"
                   title="Delete project"
               >
@@ -61,6 +58,14 @@
               </v-icon>
             </template>
           </v-data-table>
+
+          <TasksListDialog
+              v-if="selectedProject"
+              :project="selectedProject"
+              :is-shown="isTasksListDialogShown"
+              @close="closeTasksListModal"
+              @reload="fetchProjects"
+          />
 
           <ProjectDialog
               :project="selectedProject"
@@ -75,15 +80,16 @@
 </template>
 
 <script>
-
 import axios from "axios";
 import {DELETE_PROJECT, GET_PROJECTS_COLLECTION} from "@/routes";
 import ProjectDialog from "@/components/ProjectDialog.vue";
+import TasksListDialog from "@/components/TasksListDialog.vue";
 
 export default {
   name: 'App',
   components: {
     ProjectDialog,
+    TasksListDialog,
   },
   data: () => ({
     headers: [
@@ -103,6 +109,7 @@ export default {
     projects: [],
     loading: false,
     isProjectDialogShown: false,
+    isTasksListDialogShown: false,
     selectedProject: null,
   }),
   methods: {
@@ -137,6 +144,14 @@ export default {
     closeProjectModal() {
       this.isProjectDialogShown = false;
       this.selectedProject = null;
+    },
+    closeTasksListModal() {
+      this.isTasksListDialogShown = false;
+      this.selectedProject = null;
+    },
+    openTasksList(project) {
+      this.selectedProject = project;
+      this.isTasksListDialogShown = true;
     },
     async deleteProject(project) {
       this.loading = true;

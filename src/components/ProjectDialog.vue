@@ -121,7 +121,6 @@
 </template>
 
 <script>
-
 import axios from "axios";
 import {CREATE_PROJECT, UPDATE_PROJECT} from "@/routes";
 
@@ -144,13 +143,8 @@ export default {
     validationError: null,
   }),
   computed: {
-    isDialogShown: {
-      get() {
+    isDialogShown() {
         return this.isShown;
-      },
-      set() {
-        this.close();
-      },
     },
     submitBtnTitle() {
       return this.project ? 'Save' : 'Create';
