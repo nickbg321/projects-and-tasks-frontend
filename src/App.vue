@@ -131,7 +131,7 @@ export default {
     async fetchProjects() {
       this.loading = true;
 
-      const url = process.env.VUE_APP_API_BASE_URL + GET_PROJECTS_COLLECTION + '?itemsPerPage=' + this.options.itemsPerPage + '&page=' + this.options.page;
+      const url = GET_PROJECTS_COLLECTION + '?itemsPerPage=' + this.options.itemsPerPage + '&page=' + this.options.page;
       const response = await axios.get(url);
 
       this.projects = response.data['hydra:member'];
@@ -156,9 +156,7 @@ export default {
     async deleteProject(project) {
       this.loading = true;
 
-      const url = process.env.VUE_APP_API_BASE_URL + DELETE_PROJECT.replace('{id}', project.id);
-
-      await axios.delete(url);
+      await axios.delete(DELETE_PROJECT.replace('{id}', project.id));
       await this.fetchProjects();
     },
     async editProject(project) {

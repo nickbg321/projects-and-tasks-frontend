@@ -206,9 +206,9 @@ export default {
 
       try {
         if (this.project) {
-          await axios.put(process.env.VUE_APP_API_BASE_URL + UPDATE_PROJECT.replace('{id}', this.project.id), payload);
+          await axios.put(UPDATE_PROJECT.replace('{id}', this.project.id), payload);
         } else {
-          await axios.post(process.env.VUE_APP_API_BASE_URL + CREATE_PROJECT, payload);
+          await axios.post(CREATE_PROJECT, payload);
         }
       } catch (error) {
         this.handleSubmitError(error);

@@ -1,4 +1,4 @@
-<template v-if="project">
+<template>
   <v-dialog
       v-model="isDialogShown"
       width="600px"
@@ -45,7 +45,7 @@
                     block
                     :disabled="!canCreate"
                     @click="createTask"
-                    :loading="isSubmitting"
+                    :loading="loading"
                 >
                   Add task
                 </v-btn>
@@ -82,7 +82,7 @@ export default {
     tasks: [],
     completedTasks: [],
     newTaskDescription: '',
-    isSubmitting: false,
+    loading: false,
   }),
   computed: {
     isDialogShown() {
@@ -98,8 +98,7 @@ export default {
       this.$emit('reload');
     },
     async fetchTasksList() {
-      const url = process.env.VUE_APP_API_BASE_URL + GET_TASKS_FOR_PROJECT.replace('{id}', this.project.id);
-      const response = await axios.get(url);
+      const response = await axios.get(GET_TASKS_FOR_PROJECT.replace('{id}', this.project.id));
 
       this.tasks = response.data['hydra:member'];
       this.tasks.forEach((task) => {
@@ -109,23 +108,22 @@ export default {
       })
     },
     async toggleTask(task) {
-      const url = process.env.VUE_APP_API_BASE_URL + UPDATE_TASK.replace('{id}', task.id);
       const isCompleted = this.completedTasks.includes(task.id);
 
-      await axios.patch(url, {isCompleted: isCompleted}, {headers: {'Content-Type': 'application/merge-patch+json'}});
+      await axios.patch(
+          UPDATE_TASK.replace('{id}', task.id),
+          {isCompleted: isCompleted},
+          {headers: {'Content-Type': 'application/merge-patch+json'}}
+      );
     },
     async deleteTask(task) {
-      const url = process.env.VUE_APP_API_BASE_URL + DELETE_TASK.replace('{id}', task.id);
-
-      await axios.delete(url);
+      await axios.delete(DELETE_TASK.replace('{id}', task.id));
       await this.fetchTasksList();
     },
     async createTask() {
-      const url = process.env.VUE_APP_API_BASE_URL + CREATE_TASK;
+      this.loading = true;
 
-      this.isSubmitting = true;
-
-      await axios.post(url, {
+      await axios.post(CREATE_TASK, {
         description: this.newTaskDescription,
         project: this.project['@id'],
         isCompleted: false,
@@ -133,7 +131,7 @@ export default {
       await this.fetchTasksList();
 
       this.newTaskDescription = '';
-      this.isSubmitting = false;
+      this.loading = false;
     },
   },
   mounted() {
