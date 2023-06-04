@@ -1,5 +1,4 @@
 export const GET_PROJECTS_COLLECTION = '/api/projects';
-export const GET_ONE_PROJECT = '/api/projects/{id}';
 export const CREATE_PROJECT = '/api/projects';
 export const UPDATE_PROJECT = '/api/projects/{id}';
 export const DELETE_PROJECT = '/api/projects/{id}';
