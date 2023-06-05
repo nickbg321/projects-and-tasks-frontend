@@ -57,6 +57,15 @@
                 mdi-delete
               </v-icon>
             </template>
+
+            <template v-slot:[`item.description`]="{ item }">
+               <span
+                   class="d-inline-block text-truncate"
+                   style="max-width: 250px;"
+               >
+                {{ item.description }}
+              </span>
+            </template>
           </v-data-table>
 
           <TasksListDialog
